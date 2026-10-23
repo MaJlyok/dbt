@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: mart_fraud_by_category
+    description: Фрод по категориям мерчантов
+    columns:
+      - name: cat_id
+        description: Категория мерчанта.
+        data_tests:
+          - unique
+      - name: txn_count
+        description: Число транзакций в категории.
+      - name: fraud_count
+        description: Число мошеннических транзакций.
+      - name: fraud_rate
+        description: Доля фрода в процентах, от 0 до 100.
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: total_amount
+        description: Сумма всех транзакций категории.
+      - name: fraud_amount
+        description: Сумма мошеннических транзакций.

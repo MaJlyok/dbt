@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: mart_customer_risk_profile
+    description: Профиль риска клиента
+    columns:
+      - name: customer_id
+        description: Суррогатный ключ клиента из имени и фамилии
+        data_tests:
+          - unique 
+      - name: name_1
+        description: Имя клиента.
+      - name: name_2
+        description: Фамилия клиента.
+      - name: txn_count
+        description: Число транзакций клиента.
+      - name: fraud_count
+        description: Число мошеннических транзакций.
+      - name: fraud_rate
+        description: Доля фрода в процентах, от 0 до 100.
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+      - name: total_amount
+        description: Сумма всех транзакций клиента.
+      - name: avg_check
+        description: Средний чек.
+      - name: first_tx_date
+        description: Дата первой транзакции.
+      - name: last_tx_date
+        description: Дата последней транзакции.
+      - name: risk_segment
+        description: HIGH при fraud_rate от 10% или от 3 фродов, MEDIUM при хотя бы одном фроде, иначе LOW.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["HIGH", "MEDIUM", "LOW"]
